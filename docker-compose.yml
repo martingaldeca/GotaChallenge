@@ -1,0 +1,129 @@
+version: '3.7'
+services:
+  backend:
+    container_name: ${PROJECT_NAME}_backend
+    hostname: backend
+    restart: always
+    image: ${PROJECT_NAME}_backendimage
+    build:
+      context: .
+      dockerfile: docker/src/Dockerfile
+    command: sh post_deploy.sh
+    env_file:
+      - .env
+      - .env-local
+    volumes:
+      - ./src/.:/src
+      - vol_logs:/src/logs
+      - ./docker/src/post_deploy.sh:/src/post_deploy.sh
+    ports:
+      - "${BACKEND_PORT}:${BACKEND_PORT}"
+    links:
+      - postgres
+      - broker
+      - redis
+    depends_on:
+      - postgres
+      - broker
+      - redis
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+        max-file: "2"
+
+  worker:
+    container_name: ${PROJECT_NAME}_worker
+    hostname: worker
+    image: ${PROJECT_NAME}_backendimage
+    restart: always
+    env_file:
+      - .env
+      - .env-local
+    environment:
+      WORKER_NAME: default_worker
+      WORKER_QUEUES: default
+    command: sh run_worker.sh
+    volumes:
+      - ./src/.:/src
+      - vol_logs:/src/logs
+      - ./docker/src/run_worker.sh:/src/run_worker.sh
+    depends_on:
+      - backend
+      - broker
+      - redis
+    links:
+      - postgres
+      - broker
+      - redis
+
+  beat:
+    container_name: ${PROJECT_NAME}_beat
+    hostname: beat
+    image: ${PROJECT_NAME}_backendimage
+    restart: always
+    env_file:
+      - .env
+      - .env-local
+    environment:
+      WORKER_NAME: beat_worker
+      WORKER_QUEUES: default
+    command: sh run_beat.sh
+    volumes:
+      - ./src/.:/src
+      - vol_logs:/src/logs
+      - ./docker/src/run_beat.sh:/src/run_beat.sh
+    depends_on:
+      - broker
+      - worker
+      - redis
+    links:
+      - postgres
+      - broker
+      - redis
+
+  postgres:
+    image: postgres:13
+    container_name: ${PROJECT_NAME}_postgres
+    hostname: postgres
+    restart: 'always'
+    env_file:
+      - .env
+      - .env-local
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+        max-file: "2"
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT}:5432"
+    volumes:
+      - vol_postgres_db:/var/lib/postgresql/data
+      - vol_logs:/logs
+
+  broker:
+    hostname: "broker"
+    container_name: ${PROJECT_NAME}_broker
+    image: rabbitmq:3
+    env_file:
+      - .env
+      - .env-local
+
+  redis:
+    image: redis:6.2.3-alpine
+    container_name: ${PROJECT_NAME}_redis
+    env_file:
+      - .env
+      - .env-local
+    volumes:
+      - vol_redis:/var/lib/redis
+
+volumes:
+  vol_media:
+    driver: local
+  vol_logs:
+    driver: local
+  vol_postgres_db:
+    driver: local
+  vol_redis:
+    driver: local
