@@ -1,3 +1,4 @@
 from .user_serializers import SimpleUserSerializer, MeSerializer, RegisterSerializer
 from .action_serializers import ActionSerializer
 from .ingredient_serializers import IngredientSerializer
+from .device_serializers import DeviceSerializer, CreateOrUpdateDeviceSerializer

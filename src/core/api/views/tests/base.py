@@ -1,7 +1,8 @@
-from core.factories import UserFactory
-from core.models import User
 from django.urls import reverse
 from rest_framework.test import APITestCase, APIRequestFactory
+
+from core.factories import UserFactory
+from core.models import User
 
 
 class APITestBase(APITestCase):

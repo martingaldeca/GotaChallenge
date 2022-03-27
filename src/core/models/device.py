@@ -39,8 +39,12 @@ class Device(TimeStampedUUIDModel, NameAndDescriptionModel, ActiveModel, ImageMo
 
     @property
     def active_actions(self):
-        return DeviceActionRelationship.objects.filter(device=self).active.values('action')
+        return Action.objects.filter(
+            id__in=DeviceActionRelationship.objects.filter(device=self).active.values_list('action')
+        )
 
     @property
     def deactivated_actions(self):
-        return DeviceActionRelationship.objects.filter(device=self).deactivated.values('action')
+        return Action.objects.filter(
+            id__in=DeviceActionRelationship.objects.filter(device=self).deactivated.values_list('action')
+        )
