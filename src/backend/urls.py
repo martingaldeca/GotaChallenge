@@ -10,7 +10,7 @@ from rest_framework_simplejwt.views import (
 )
 
 api_url_patterns = [
-    # path('gotapi/', include('core.api.urls', 'core')),
+    path('gotapi/', include('core.api.urls', 'core')),
     path('gotapi/login/', TokenObtainPairView.as_view(), name='login'),
     path('gotapi/refresh/', TokenRefreshView.as_view(), name='refresh'),
 ]
