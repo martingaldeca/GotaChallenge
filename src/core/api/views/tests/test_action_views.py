@@ -73,3 +73,29 @@ class RetrieveUpdateDestroyActionViewTest(APITestBase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, ActionSerializer(instance=action).data)
+
+    def test_update_action_200_OK(self):
+        action: Action = ActionFactory()
+        self.url = reverse('core:action', kwargs={'uuid': action.uuid.hex})
+
+        new_name = 'test_name_2'
+        new_description = 'test_description_2'
+        data = {
+            'name': new_name,
+            'description': new_description,
+        }
+
+        response = self.client.put(self.url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        action.refresh_from_db()
+        self.assertEqual(response.data, ActionSerializer(instance=action).data)
+        self.assertEqual(action.name, new_name)
+        self.assertEqual(action.description, new_description)
+
+    def test_delete_action_204_NO_CONTENT(self):
+        action: Action = ActionFactory()
+        self.assertEqual(Action.objects.count(), 1)
+        self.url = reverse('core:action', kwargs={'uuid': action.uuid.hex})
+        response = self.client.delete(self.url)
+        self.assertEqual(Action.objects.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

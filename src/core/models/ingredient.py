@@ -54,6 +54,11 @@ class Ingredient(TimeStampedUUIDModel, NameAndDescriptionModel, ImageModel):
         verbose_name = _('Ingredient')
         verbose_name_plural = _('Ingredients')
 
+    def save(self, *args, **kwargs):
+        if self.food_type not in [food_type[0] for food_type in Ingredient.FOOD_TYPES]:
+            raise ValueError('Not valid food type.')
+        super(Ingredient, self).save()
+
     @property
     def is_vegetarian(self):
         return self.food_type in self.VEGETARIAN_FOOD_TYPES

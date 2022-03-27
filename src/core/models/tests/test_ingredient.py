@@ -22,3 +22,10 @@ class IngredientTest(TestCase):
         ingredient: Ingredient = IngredientFactory(food_type=random.choice(Ingredient.VEGAN_FOOD_TYPES))
         self.assertTrue(ingredient.is_vegan)
         self.assertEqual(Ingredient.objects.all().vegan.count(), 1)
+
+    def test_not_valid_ingredient(self):
+        ingredient: Ingredient = IngredientFactory()
+        ingredient.food_type = 'not_valid'
+        with self.assertRaises(ValueError) as expected_exception:
+            ingredient.save()
+        self.assertEqual(str(expected_exception.exception), 'Not valid food type.')
