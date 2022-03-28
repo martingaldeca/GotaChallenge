@@ -21,7 +21,7 @@ class Device(TimeStampedUUIDModel, NameAndDescriptionModel, ActiveModel, ImageMo
         Action,
         blank=True,
         through=DeviceActionRelationship,
-        related_name='allowed_actions',
+        related_name='devices_allowed',
         verbose_name=_('Allowed actions'),
         help_text=_(
             'Allowed actions for the device. The actions can be active or not, you can check '

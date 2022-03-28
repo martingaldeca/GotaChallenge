@@ -21,7 +21,7 @@ class RecipyStep(TimeStampedUUIDModel, NameAndDescriptionModel, ImageModel):
     ingredients = models.ManyToManyField(
         Ingredient,
         through=StepIngredientRelationShip,
-        related_name='ingredients',
+        related_name='recipy_steps',
         verbose_name=_('Ingredients'),
         help_text=_(
             'All the needed ingredients in the recipy step'

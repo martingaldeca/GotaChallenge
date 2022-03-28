@@ -17,7 +17,7 @@ class RecipyStepFactory(DjangoModelFactory):
     name = FuzzyText()
     description = FuzzyText()
     action = LazyAttribute(
-        lambda recipy_step: recipy_step.device.allowed_actions.last() if recipy_step.device else ActionFactory()
+        lambda recipy_step: recipy_step.device.allowed_actions.last()
     )
     device = SubFactory(DeviceFactory)
     time = FuzzyFloat(low=0, high=60 * 24 * 7, precision=2)

@@ -332,4 +332,7 @@ SHELL_PLUS = "ipython"
 if DEBUG_SQL:
     SHELL_PLUS_PRINT_SQL = True
     SHELL_PLUS_PRINT_SQL_TRUNCATE = None
-SHELL_PLUS_IMPORTS = []
+if not PRODUCTION:
+    SHELL_PLUS_IMPORTS = [
+        'from core.factories import *',
+    ]
