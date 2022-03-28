@@ -1,5 +1,6 @@
 import ast
 
+from django.core import exceptions
 from django.db import models
 from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
@@ -38,7 +39,7 @@ class CreateRecipySerializer(RecipySerializer):
         def _get_if_object_exists(uuid, model: models.Model):
             try:
                 return model.objects.get(uuid=uuid)
-            except model.DoesNotExist:
+            except (model.DoesNotExist, exceptions.ValidationError):
                 raise api_exceptions.NotFoundException(f'{model.__name__.lower()}-not-found')
 
         # Create the recipy

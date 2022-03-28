@@ -3,3 +3,4 @@ from .action_views import ActionListView, CreateNewActionView, RetrieveUpdateDes
 from .ingredient_views import IngredientListView, CreateNewIngredientView, RetrieveUpdateDestroyIngredientView
 from .device_views import DeviceListView, CreateNewDeviceView, RetrieveUpdateDestroyDeviceView
 from .recipy_views import RecipyListView, CreateNewRecipyView, RetrieveUpdateDestroyRecipyView
+from .recipy_step_views import RetrieveUpdateDestroyRecipyStepView

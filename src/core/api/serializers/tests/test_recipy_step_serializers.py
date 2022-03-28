@@ -1,6 +1,11 @@
+import uuid
+
 from django.test import TestCase
 
-from core.api.serializers import RecipyStepSerializer, ActionSerializer, DeviceSerializer, IngredientSerializer
+from core.api.serializers import (
+    RecipyStepSerializer, ActionSerializer, DeviceSerializer, IngredientSerializer, UpdateRecipyStepSerializer
+)
+from core.exceptions import api as api_exceptions
 from core.factories import RecipyStepFactory
 from core.models import RecipyStep, Ingredient
 
@@ -30,3 +35,26 @@ class RecipyStepSerializerTest(TestCase):
             'ordinal': recipy_step.ordinal,
         }
         self.assertEqual(RecipyStepSerializer(recipy_step).data, expected_data)
+
+
+class UpdateRecipyStepSerializerTest(TestCase):
+
+    def test_not_valid_device(self):
+        data = {
+            'device': uuid.uuid4().hex,
+        }
+        serializer = UpdateRecipyStepSerializer(data=data)
+        with self.assertRaises(api_exceptions.NotFoundException) as expected_exception:
+            serializer.is_valid(raise_exception=True)
+
+        self.assertEqual(expected_exception.exception.detail['message'], 'device-not-found')
+
+    def test_not_valid_action(self):
+        data = {
+            'action': uuid.uuid4().hex,
+        }
+        serializer = UpdateRecipyStepSerializer(data=data)
+        with self.assertRaises(api_exceptions.NotFoundException) as expected_exception:
+            serializer.is_valid(raise_exception=True)
+
+        self.assertEqual(expected_exception.exception.detail['message'], 'action-not-found')

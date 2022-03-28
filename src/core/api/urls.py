@@ -23,4 +23,6 @@ urlpatterns = [
     path('new_recipy/', core_views.CreateNewRecipyView.as_view(), name='create-recipy'),
     path('recipy/<uuid>/', core_views.RetrieveUpdateDestroyRecipyView.as_view(), name='recipy'),
     path('recipies/', core_views.RecipyListView.as_view(), name='list-recipies'),
+
+    path('recipy_step/<uuid>/', core_views.RetrieveUpdateDestroyRecipyStepView.as_view(), name='recipy-step'),
 ]
