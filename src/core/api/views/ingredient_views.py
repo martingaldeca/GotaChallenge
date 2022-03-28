@@ -8,7 +8,19 @@ from core.models import Ingredient
 class IngredientListView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = IngredientSerializer
-    queryset = Ingredient.objects.all()
+
+    def get_queryset(self):
+        qs = Ingredient.objects.all()
+
+        # Filter by vegetarian
+        if self.request.query_params.get('vegetarian', False):
+            qs = qs.vegetarian
+
+        # Filter by vegan
+        if self.request.query_params.get('vegan', False):
+            qs = qs.vegan
+
+        return qs
 
 
 class CreateNewIngredientView(CreateAPIView):

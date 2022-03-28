@@ -25,6 +25,39 @@ class IngredientListViewTest(APITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], ingredients)
 
+    def test_filter_by_vegetarian_200_OK(self):
+        ingredients = []
+        for i in range(random.randint(1, 5)):
+            ingredients.append(
+                IngredientSerializer(
+                    instance=IngredientFactory(food_type=Ingredient.VEGETARIAN_FOOD_TYPES[0])
+                ).data
+            )
+        IngredientFactory(food_type=Ingredient.T_MEAT)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), len(ingredients) + 1)
+
+        response = self.client.get(self.url, {'vegetarian': True})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'], ingredients)
+
+    def test_filter_by_vegann_200_OK(self):
+        ingredients = []
+        for i in range(random.randint(1, 5)):
+            ingredients.append(
+                IngredientSerializer(
+                    instance=IngredientFactory(food_type=Ingredient.VEGAN_FOOD_TYPES[0])
+                ).data
+            )
+        IngredientFactory(food_type=Ingredient.T_MEAT)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data['results']), len(ingredients) + 1)
+
+        response = self.client.get(self.url, {'vegan': True})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['results'], ingredients)
 
 class CreateNewIngredientViewTest(APITestBase):
     url = reverse('core:create-ingredient')
