@@ -1,0 +1,1583 @@
+{
+	"info": {
+		"_postman_id": "866a2b02-2445-40a9-b427-714ce235621c",
+		"name": "GotaChallenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Me",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Register valid\", () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 409])",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"email\": \"{{email}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/register/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.environment.set(\"token\", data.access);",
+									"",
+									"pm.test(\"Login valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"{{username}}\",\n    \"password\": \"{{password}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/login/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.environment.set(",
+									"    \"user_uuid\", ",
+									"    data.uuid",
+									");",
+									"",
+									"pm.test(\"Me valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/gotapi/me/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"me",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Actions",
+			"item": [
+				{
+					"name": "NewAction",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"New action valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201)    ",
+									"})",
+									"",
+									"pm.environment.set(",
+									"    \"valid_action\", ",
+									"    data.uuid",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "{{action_name}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "{{action_description}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/gotapi/new_action/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"new_action",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "NewActionMustNotRepeatName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"New action must not repeat name valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(400)",
+									"    pm.expect(data.name[0]).to.deep.eql(\"Ya existe Acción con este Nombre.\")",
+									"",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "{{action_name}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "{{action_description}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/gotapi/new_action/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"new_action",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateAction",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"Update action valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_action\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"other_valid_action_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"other_valid_action_description\"))",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{other_valid_action_name}}\",\n    \"description\": \"{{other_valid_action_description}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/action/{{valid_action}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"action",
+								"{{valid_action}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ActionDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"Detail action valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)  ",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_action\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"other_valid_action_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"other_valid_action_description\"))  ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/action/{{valid_action}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"action",
+								"{{valid_action}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetActions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"List actions valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200) ",
+									"    pm.expect(data.results.length).to.eql(1)",
+									"    pm.expect(data.results[0].uuid).to.eql(pm.environment.get(\"valid_action\"))",
+									"    pm.expect(data.results[0].name).to.eql(pm.environment.get(\"other_valid_action_name\"))",
+									"    pm.expect(data.results[0].description).to.eql(pm.environment.get(\"other_valid_action_description\")) ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/gotapi/actions/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"actions",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "V2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ingredients",
+			"item": [
+				{
+					"name": "NewIngredient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.environment.set(",
+									"    \"valid_ingredient\", ",
+									"    data.uuid",
+									");",
+									"",
+									"pm.test(\"New ingredient valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "{{ingredient_name}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "{{ingredient_description}}",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/martin/Descargas/drop.png"
+								},
+								{
+									"key": "food_type",
+									"value": "{{ingredient_food_type}}",
+									"type": "text"
+								},
+								{
+									"key": "calories",
+									"value": "{{ingredient_calories}}",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "{{ingredient_price}}",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/gotapi/new_ingredient/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"new_ingredient",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateIngredient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"Update ingredient valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_ingredient\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"other_valid_ingredient_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"other_valid_ingredient_description\"))",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{other_valid_ingredient_name}}\",\n    \"description\": \"{{other_valid_ingredient_description}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/ingredient/{{valid_ingredient}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"ingredient",
+								"{{valid_ingredient}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "IngredientDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"Detail ingredient valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)  ",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_ingredient\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"other_valid_ingredient_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"other_valid_ingredient_description\"))  ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/ingredient/{{valid_ingredient}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"ingredient",
+								"{{valid_ingredient}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetIngredients",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"List ingredients valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200) ",
+									"    pm.expect(data.results.length).to.eql(1)",
+									"    pm.expect(data.results[0].uuid).to.eql(pm.environment.get(\"valid_ingredient\"))",
+									"    pm.expect(data.results[0].name).to.eql(pm.environment.get(\"other_valid_ingredient_name\"))",
+									"    pm.expect(data.results[0].description).to.eql(pm.environment.get(\"other_valid_ingredient_description\")) ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/gotapi/ingredients/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"ingredients",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "V2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Devices",
+			"item": [
+				{
+					"name": "NewDevice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.environment.set(",
+									"    \"valid_device\", ",
+									"    data.uuid",
+									");",
+									"",
+									"pm.test(\"New device valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "{{device_name}}",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "{{device_description}}",
+									"type": "text"
+								},
+								{
+									"key": "allowed_actions",
+									"value": "{{valid_action}}",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/home/martin/Descargas/drop.png"
+								},
+								{
+									"key": "active",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "localhost/gotapi/new_device/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"new_device",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateDevice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"Update device valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_device\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"other_valid_device_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"other_valid_device_description\"))",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{other_valid_device_name}}\",\n    \"description\": \"{{other_valid_device_description}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/device/{{valid_device}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"device",
+								"{{valid_device}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeviceDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"Detail device valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)  ",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_device\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"other_valid_device_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"other_valid_device_description\"))  ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/device/{{valid_device}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"device",
+								"{{valid_device}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetDevices",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"List devices valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200) ",
+									"    pm.expect(data.results.length).to.eql(1)",
+									"    pm.expect(data.results[0].uuid).to.eql(pm.environment.get(\"valid_device\"))",
+									"    pm.expect(data.results[0].name).to.eql(pm.environment.get(\"other_valid_device_name\"))",
+									"    pm.expect(data.results[0].description).to.eql(pm.environment.get(\"other_valid_device_description\")) ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/gotapi/devices/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"devices",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "V2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recipy",
+			"item": [
+				{
+					"name": "NewRecipy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.environment.set(",
+									"    \"valid_recipy\", ",
+									"    data.uuid",
+									");",
+									"",
+									"pm.environment.set(",
+									"    \"valid_recipy_step\", ",
+									"    data.recipy_steps[0].uuid",
+									");",
+									"",
+									"pm.environment.set(",
+									"    \"valid_recipy_step_2\", ",
+									"    data.recipy_steps[1].uuid",
+									");",
+									"",
+									"pm.test(\"New recipy valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(201)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{recipy_name}}\",\n    \"description\": \"{{recipy_description}}\",\n    \"image\": \"{{recipy_image_base_64}}\",\n    \"recipy_steps\": [\n        {\n            \"name\": \"Pelar papas\",\n            \"time\": 600,\n            \"action\": \"{{valid_action}}\",\n            \"description\": \"Pues eso, pelar papas\",\n            \"device\": \"{{valid_device}}\",\n            \"ingredients_with_quantities\": [\n                [\n                    \"{{valid_ingredient}}\",\n                    50\n                ]\n            ]\n        },\n        {\n            \"name\": \"Quemar papas\",\n            \"time\": 700,\n            \"action\": \"{{valid_action}}\",\n            \"description\": \"Pues eso, quemar papas\",\n            \"device\": \"{{valid_device}}\",\n            \"ingredients_with_quantities\": [\n                [\n                    \"{{valid_ingredient}}\",\n                    60\n                ]\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/new_recipy/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"new_recipy",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RecipyDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"Detail recipy valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)  ",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_recipy\"))",
+									"    pm.expect(data.name).to.eql(pm.environment.get(\"recipy_name\"))",
+									"    pm.expect(data.description).to.eql(pm.environment.get(\"recipy_description\"))  ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/recipy/{{valid_recipy}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipy",
+								"{{valid_recipy}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetRecipies",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"List recipies valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200) ",
+									"    pm.expect(data.results.length).to.eql(1)",
+									"    pm.expect(data.results[0].uuid).to.eql(pm.environment.get(\"valid_recipy\"))",
+									"    pm.expect(data.results[0].name).to.eql(pm.environment.get(\"recipy_name\"))",
+									"    pm.expect(data.results[0].description).to.eql(pm.environment.get(\"recipy_description\")) ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost/gotapi/recipies/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipies",
+								""
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "V2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RecipyStep",
+			"item": [
+				{
+					"name": "RecipyStepDetail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"",
+									"pm.test(\"Detail recipy step valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)  ",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_recipy_step\"))",
+									"    pm.expect(data.device.uuid).to.eql(pm.environment.get(\"valid_device\"))",
+									"    pm.expect(data.action.uuid).to.eql(pm.environment.get(\"valid_action\"))  ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/recipy_step/{{valid_recipy_step}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipy_step",
+								"{{valid_recipy_step}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateRecipyStep",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var data = pm.response.json();",
+									"pm.test(\"Update recipy step valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(200)",
+									"    pm.expect(data.uuid).to.eql(pm.environment.get(\"valid_recipy_step\"))",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"{{other_valid_recipy_step_name}}\",\n    \"description\": \"{{other_valid_recipy_step_description}}\",\n    \"device\": \"{{valid_device}}\",\n    \"action\": \"{{valid_action}}\",\n    \"ingredients_with_quantities\": [\n        [\n            \"{{valid_ingredient}}\",\n            500000\n        ]\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/recipy_step/{{valid_recipy_step}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipy_step",
+								"{{valid_recipy_step}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Clean",
+			"item": [
+				{
+					"name": "DeleteRecipy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Destroy recipy valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/recipy/{{valid_recipy}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipy",
+								"{{valid_recipy}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteRecipyStep1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Destroy recipy step valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/recipy_step/{{valid_recipy_step}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipy_step",
+								"{{valid_recipy_step}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteRecipyStep2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Destroy recipy step valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/recipy_step/{{valid_recipy_step_2}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"recipy_step",
+								"{{valid_recipy_step_2}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteDevice",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Delete device valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/device/{{valid_device}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"device",
+								"{{valid_device}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteAction",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Destroy actions valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/action/{{valid_action}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"action",
+								"{{valid_action}}",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteIngredient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Destroy ingredients valid\", () => {",
+									"    pm.expect(pm.response.code).to.eql(204)    ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost/gotapi/ingredient/{{valid_ingredient}}/",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"gotapi",
+								"ingredient",
+								"{{valid_ingredient}}",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
