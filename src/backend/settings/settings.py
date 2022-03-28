@@ -60,6 +60,7 @@ EXTERNAL_LIBRARIES = [
     'axes',
     'rest_framework_simplejwt',
     'drf_api_logger',
+    'drf_extra_fields'
 ]
 
 BASE_APPS = [

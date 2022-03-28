@@ -6,7 +6,7 @@ from core.models import Device, Action
 
 
 class DeviceSerializer(serializers.ModelSerializer):
-    uuid = uuid = serializers.UUIDField(format='hex', read_only=True)
+    uuid = serializers.UUIDField(format='hex', read_only=True)
     allowed_actions = ActionSerializer(many=True, read_only=True)
     active_actions = ActionSerializer(read_only=True, many=True)
     deactivated_actions = ActionSerializer(read_only=True, many=True)
@@ -22,13 +22,6 @@ class DeviceSerializer(serializers.ModelSerializer):
 
 class CreateOrUpdateDeviceSerializer(DeviceSerializer):
     allowed_actions = serializers.ListField(required=False)
-
-    class Meta:
-        model = Device
-        fields = [
-            'uuid', 'name', 'description', 'allowed_actions', 'image', 'active',
-            'deactivated_actions', 'active_actions'
-        ]
 
     @staticmethod
     def validate_allowed_actions(value):
@@ -54,4 +47,4 @@ class CreateOrUpdateDeviceSerializer(DeviceSerializer):
 
     @property
     def data(self):
-        return DeviceSerializer(self.instance).data
+        return DeviceSerializer(self.instance, context=self.context).data

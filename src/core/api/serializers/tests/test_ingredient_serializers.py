@@ -54,5 +54,6 @@ class IngredientSerializerTest(TestCase):
             'price': ingredient.price,
             'is_vegetarian': ingredient.is_vegetarian,
             'is_vegan': ingredient.is_vegan,
+            'image': ingredient.image.url,
         }
         self.assertEqual(serializer.data, expected)

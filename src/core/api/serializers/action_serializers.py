@@ -4,7 +4,7 @@ from core.models import Action
 
 
 class ActionSerializer(serializers.ModelSerializer):
-    uuid = uuid = serializers.UUIDField(format='hex', read_only=True)
+    uuid = serializers.UUIDField(format='hex', read_only=True)
 
     class Meta:
         model = Action

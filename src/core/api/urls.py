@@ -19,4 +19,8 @@ urlpatterns = [
     path('new_device/', core_views.CreateNewDeviceView.as_view(), name='create-device'),
     path('device/<uuid>/', core_views.RetrieveUpdateDestroyDeviceView.as_view(), name='device'),
     path('devices/', core_views.DeviceListView.as_view(), name='list-devices'),
+
+    path('new_recipy/', core_views.CreateNewRecipyView.as_view(), name='create-recipy'),
+    path('recipy/<uuid>/', core_views.RetrieveUpdateDestroyRecipyView.as_view(), name='recipy'),
+    path('recipies/', core_views.RecipyListView.as_view(), name='list-recipies'),
 ]

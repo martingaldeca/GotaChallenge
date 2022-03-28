@@ -53,7 +53,10 @@ class CreateNewDeviceViewTest(APITestBase):
         self.assertEqual(Device.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         device = Device.objects.last()
-        self.assertEqual(response.data, CreateOrUpdateDeviceSerializer(instance=device).data)
+        self.assertEqual(
+            response.data,
+            CreateOrUpdateDeviceSerializer(instance=device, context=self.test_context).data
+        )
 
         self.assertEqual(device.name, self.device_name)
         self.assertEqual(device.description, self.device_description)
@@ -69,7 +72,10 @@ class RetrieveUpdateDestroyDeviceViewTest(APITestBase):
         self.url = reverse('core:device', kwargs={'uuid': device.uuid.hex})
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, CreateOrUpdateDeviceSerializer(instance=device).data)
+        self.assertEqual(
+            response.data,
+            CreateOrUpdateDeviceSerializer(instance=device, context=self.test_context).data
+        )
 
     def test_update_device_200_OK(self):
         device: Device = DeviceFactory()
@@ -85,7 +91,10 @@ class RetrieveUpdateDestroyDeviceViewTest(APITestBase):
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         device.refresh_from_db()
-        self.assertEqual(response.data, CreateOrUpdateDeviceSerializer(instance=device).data)
+        self.assertEqual(
+            response.data,
+            CreateOrUpdateDeviceSerializer(instance=device, context=self.test_context).data
+        )
         self.assertEqual(device.name, new_name)
         self.assertEqual(device.description, new_description)
 

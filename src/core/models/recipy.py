@@ -21,7 +21,7 @@ class Recipy(TimeStampedUUIDModel, NameAndDescriptionModel, ImageModel):
     def add_recipy_step(
             self,
             name,
-            ingredients_with_quantity,
+            ingredients_with_quantities,
             action,
             time,
             device=None,
@@ -40,7 +40,7 @@ class Recipy(TimeStampedUUIDModel, NameAndDescriptionModel, ImageModel):
             ordinal=ordinal,
             image=image,
         )
-        for ingredient, quantity in ingredients_with_quantity:
+        for ingredient, quantity in ingredients_with_quantities:
             recipy_step.add_ingredient(ingredient=ingredient, quantity=quantity)
         self.recipy_steps.add(recipy_step)
 

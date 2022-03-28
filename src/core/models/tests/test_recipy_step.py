@@ -31,7 +31,7 @@ class RecipyStepTest(TestCase):
     def test_ingredients_with_quantities(self):
         recipy_step: RecipyStep = RecipyStepFactory(ingredients__total_ingredients=3, ingredients__fixed_quantity=1.0)
         ingredients = list(recipy_step.ingredients.order_by('name'))
-        expected = [(ingredient.name, 1.0) for ingredient in ingredients]
+        expected = [[ingredient, 1.0] for ingredient in ingredients]
         self.assertEqual(recipy_step.ingredients_with_quantities, expected)
 
     def test_add_ingredient(self):

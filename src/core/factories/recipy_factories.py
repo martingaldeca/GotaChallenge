@@ -33,9 +33,9 @@ class RecipyFactory(DjangoModelFactory):
         fixed_num_of_ingredients = kwargs.get('fixed_num_of_ingredients', random.randint(1, 5))
         fixed_time = kwargs.get('fixed_time', random.uniform(0.01, 2500))
         for i in range(total_steps):
-            ingredients_with_quantity = []
+            ingredients_with_quantities = []
             for i in range(fixed_num_of_ingredients):
-                ingredients_with_quantity.append(
+                ingredients_with_quantities.append(
                     (
                         IngredientFactory(food_type=food_type, calories=fixed_calories, price=fixed_price),
                         random.uniform(0.01, 2500)
@@ -46,7 +46,7 @@ class RecipyFactory(DjangoModelFactory):
             self.add_recipy_step(
                 name=FuzzyText(),
                 description=FuzzyText(),
-                ingredients_with_quantity=ingredients_with_quantity,
+                ingredients_with_quantities=ingredients_with_quantities,
                 action=device.allowed_actions.last(),
                 time=fixed_time,
                 device=device,

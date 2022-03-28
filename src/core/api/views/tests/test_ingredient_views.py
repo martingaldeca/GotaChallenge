@@ -20,7 +20,12 @@ class IngredientListViewTest(APITestBase):
         self.assertEqual(response.data['results'], [])
         ingredients = []
         for i in range(random.randint(1, 5)):
-            ingredients.append(IngredientSerializer(instance=IngredientFactory()).data)
+            ingredients.append(
+                IngredientSerializer(
+                    instance=IngredientFactory(),
+                    context=self.test_context
+                ).data
+            )
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], ingredients)
@@ -30,7 +35,8 @@ class IngredientListViewTest(APITestBase):
         for i in range(random.randint(1, 5)):
             ingredients.append(
                 IngredientSerializer(
-                    instance=IngredientFactory(food_type=Ingredient.VEGETARIAN_FOOD_TYPES[0])
+                    instance=IngredientFactory(food_type=Ingredient.VEGETARIAN_FOOD_TYPES[0]),
+                    context=self.test_context
                 ).data
             )
         IngredientFactory(food_type=Ingredient.T_MEAT)
@@ -42,12 +48,13 @@ class IngredientListViewTest(APITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], ingredients)
 
-    def test_filter_by_vegann_200_OK(self):
+    def test_filter_by_vegan_200_OK(self):
         ingredients = []
         for i in range(random.randint(1, 5)):
             ingredients.append(
                 IngredientSerializer(
-                    instance=IngredientFactory(food_type=Ingredient.VEGAN_FOOD_TYPES[0])
+                    instance=IngredientFactory(food_type=Ingredient.VEGAN_FOOD_TYPES[0]),
+                    context=self.test_context,
                 ).data
             )
         IngredientFactory(food_type=Ingredient.T_MEAT)
@@ -58,6 +65,7 @@ class IngredientListViewTest(APITestBase):
         response = self.client.get(self.url, {'vegan': True})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], ingredients)
+
 
 class CreateNewIngredientViewTest(APITestBase):
     url = reverse('core:create-ingredient')
@@ -79,14 +87,20 @@ class CreateNewIngredientViewTest(APITestBase):
             'food_type': ingredient_food_type,
             'calories': ingredient_calories,
             'price': ingredient_price,
-            'image': ingredient_image.file,
+            'image': ingredient_image,
         }
         self.assertEqual(Ingredient.objects.count(), 0)
         response = self.client.post(self.url, data=data_to_send)
         self.assertEqual(Ingredient.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         ingredient = Ingredient.objects.last()
-        self.assertEqual(response.data, IngredientSerializer(instance=ingredient).data)
+        self.assertEqual(
+            response.data,
+            IngredientSerializer(
+                instance=ingredient,
+                context=self.test_context
+            ).data
+        )
         self.assertEqual(ingredient.name, ingredient_name)
         self.assertEqual(ingredient.description, ingredient_description)
 
@@ -99,7 +113,7 @@ class RetrieveUpdateDestroyIngredientViewTest(APITestBase):
         self.url = reverse('core:ingredient', kwargs={'uuid': ingredient.uuid.hex})
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, IngredientSerializer(instance=ingredient).data)
+        self.assertEqual(response.data, IngredientSerializer(instance=ingredient, context=self.test_context).data)
 
     def test_update_ingredient_200_OK(self):
         ingredient: Ingredient = IngredientFactory()
@@ -121,13 +135,19 @@ class RetrieveUpdateDestroyIngredientViewTest(APITestBase):
             'food_type': new_food_type,
             'calories': new_calories,
             'price': new_price,
-            'image': new_image.file,
+            'image': new_image,
         }
 
         response = self.client.put(self.url, data=data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         ingredient.refresh_from_db()
-        self.assertEqual(response.data, IngredientSerializer(instance=ingredient).data)
+        self.assertEqual(
+            response.data,
+            IngredientSerializer(
+                instance=ingredient,
+                context=self.test_context
+            ).data
+        )
         self.assertEqual(ingredient.name, new_name)
         self.assertEqual(ingredient.description, new_description)
         self.assertEqual(ingredient.food_type, new_food_type)

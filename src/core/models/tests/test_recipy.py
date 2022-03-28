@@ -10,7 +10,7 @@ class RecipyTest(TestCase):
         self.assertTrue(recipy.is_vegetarian)
         self.assertEqual(Recipy.objects.all().vegetarian.count(), 1)
 
-        ingredients_with_quantity = [
+        ingredients_with_quantities = [
             (IngredientFactory(food_type=Ingredient.T_MEAT), 1994.0)
         ]
         recipy.add_recipy_step(
@@ -18,7 +18,7 @@ class RecipyTest(TestCase):
             description='test_description',
             action=ActionFactory(),
             time=1994.0,
-            ingredients_with_quantity=ingredients_with_quantity
+            ingredients_with_quantities=ingredients_with_quantities
         )
         self.assertFalse(recipy.is_vegetarian)
         self.assertEqual(Recipy.objects.all().vegetarian.count(), 0)
@@ -28,7 +28,7 @@ class RecipyTest(TestCase):
         self.assertTrue(recipy.is_vegan)
         self.assertEqual(Recipy.objects.all().vegan.count(), 1)
 
-        ingredients_with_quantity = [
+        ingredients_with_quantities = [
             (IngredientFactory(food_type=Ingredient.T_EGG), 1994.0)
         ]
         recipy.add_recipy_step(
@@ -36,7 +36,7 @@ class RecipyTest(TestCase):
             description='test_description',
             action=ActionFactory(),
             time=1994.0,
-            ingredients_with_quantity=ingredients_with_quantity
+            ingredients_with_quantities=ingredients_with_quantities
         )
         self.assertFalse(recipy.is_vegan)
         self.assertEqual(Recipy.objects.all().vegan.count(), 0)

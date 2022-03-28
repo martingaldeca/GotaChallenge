@@ -4,7 +4,7 @@ from core.models import Ingredient
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    uuid = uuid = serializers.UUIDField(format='hex', read_only=True)
+    uuid = serializers.UUIDField(format='hex', read_only=True)
     is_vegetarian = serializers.BooleanField(read_only=True)
     is_vegan = serializers.BooleanField(read_only=True)
 
@@ -12,5 +12,5 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = [
             'uuid', 'name', 'description', 'food_type', 'calories', 'price',
-            'is_vegetarian', 'is_vegan'
+            'is_vegetarian', 'is_vegan', 'image'
         ]

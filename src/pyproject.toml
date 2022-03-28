@@ -66,6 +66,7 @@ django-redis = "*"
 # Waffle
 django-waffle = "*"
 django-axes = "^5.23.0"
+drf-extra-fields = "^3.4.0"
 
 [tool.poetry.dev-dependencies]
 
