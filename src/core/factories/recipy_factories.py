@@ -32,16 +32,18 @@ class RecipyFactory(DjangoModelFactory):
         fixed_price = kwargs.get('fixed_price', FuzzyFloat(low=0, high=1000, precision=6))
         fixed_num_of_ingredients = kwargs.get('fixed_num_of_ingredients', random.randint(1, 5))
         fixed_time = kwargs.get('fixed_time', random.uniform(0.01, 2500))
-        for i in range(total_steps):
-            ingredients_with_quantities = []
-            for i in range(fixed_num_of_ingredients):
-                ingredients_with_quantities.append(
-                    (
-                        IngredientFactory(food_type=food_type, calories=fixed_calories, price=fixed_price),
-                        random.uniform(0.01, 2500)
-                    )
+        for _ in range(total_steps):
+            ingredients_with_quantities = [
+                (
+                    IngredientFactory(
+                        food_type=food_type,
+                        calories=fixed_calories,
+                        price=fixed_price,
+                    ),
+                    random.uniform(0.01, 2500),
                 )
-
+                for _ in range(fixed_num_of_ingredients)
+            ]
             device: Device = DeviceFactory()
             self.add_recipy_step(
                 name=FuzzyText(),

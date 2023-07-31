@@ -16,9 +16,10 @@ class ActionListViewTest(APITestBase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], [])
-        actions = []
-        for i in range(random.randint(1, 5)):
-            actions.append(ActionSerializer(instance=ActionFactory()).data)
+        actions = [
+            ActionSerializer(instance=ActionFactory()).data
+            for _ in range(random.randint(1, 5))
+        ]
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], actions)

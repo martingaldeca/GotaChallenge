@@ -58,11 +58,19 @@ class Recipy(TimeStampedUUIDModel, NameAndDescriptionModel, ImageModel):
 
     @property
     def total_calories(self):
-        return sum([ingredient.calories for ingredient in self.ingredients if ingredient.price])
+        return sum(
+            ingredient.calories
+            for ingredient in self.ingredients
+            if ingredient.price
+        )
 
     @property
     def total_price(self):
-        return sum([ingredient.price for ingredient in self.ingredients if ingredient.calories])
+        return sum(
+            ingredient.price
+            for ingredient in self.ingredients
+            if ingredient.calories
+        )
 
     @property
     def total_time(self):

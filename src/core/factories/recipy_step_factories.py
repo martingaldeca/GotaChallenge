@@ -34,7 +34,7 @@ class RecipyStepFactory(DjangoModelFactory):
     def ingredients(self: RecipyStep, create, extracted, **kwargs):
         total_ingredients = kwargs.get('total_ingredients', random.randint(1, 5))
         fixed_quantity = kwargs.get('fixed_quantity', False)
-        for i in range(total_ingredients):
+        for _ in range(total_ingredients):
             self.add_ingredient(
                 ingredient=IngredientFactory(),
                 quantity=(fixed_quantity if fixed_quantity else random.uniform(0.01, 2500))

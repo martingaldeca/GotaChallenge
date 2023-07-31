@@ -28,7 +28,7 @@ class DeviceFactory(DjangoModelFactory):
     def allowed_actions(self: Device, create, extracted, **kwargs):
         total_active = kwargs.get('total_active', random.randint(1, 5))
         total_deactivated = kwargs.get('total_deactivated', random.randint(1, 5))
-        for i in range(total_active):
+        for _ in range(total_active):
             self.add_action(action=ActionFactory())
-        for i in range(total_deactivated):
+        for _ in range(total_deactivated):
             self.add_action(action=ActionFactory(), active=False)

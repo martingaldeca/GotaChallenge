@@ -24,15 +24,15 @@ class RecipyStepSerializer(serializers.ModelSerializer):
         ]
 
     def get_ingredients(self, obj: RecipyStep):
-        ingredients_with_quantities = []
-        for ingredient, quantity in obj.ingredients_with_quantities:
-            ingredients_with_quantities.append(
-                {
-                    'ingredient': IngredientSerializer(ingredient, context=self.context).data,
-                    'quantity': quantity
-                }
-            )
-        return ingredients_with_quantities
+        return [
+            {
+                'ingredient': IngredientSerializer(
+                    ingredient, context=self.context
+                ).data,
+                'quantity': quantity,
+            }
+            for ingredient, quantity in obj.ingredients_with_quantities
+        ]
 
 
 class UpdateRecipyStepSerializer(RecipyStepSerializer):

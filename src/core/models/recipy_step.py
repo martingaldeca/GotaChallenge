@@ -91,10 +91,7 @@ class RecipyStep(TimeStampedUUIDModel, NameAndDescriptionModel, ImageModel):
                 'ingredient'
             ).values_list('ingredient__id', 'quantity')
         )
-        ingredients_with_quantities = []
-        for id, quantity in id_list:
-            ingredients_with_quantities.append([Ingredient.objects.get(id=id), quantity])
-        return ingredients_with_quantities
+        return [[Ingredient.objects.get(id=id), quantity] for id, quantity in id_list]
 
     def add_ingredient(self, ingredient: Ingredient, quantity: float):
         StepIngredientRelationShip.objects.create(recipy_step=self, ingredient=ingredient, quantity=quantity)

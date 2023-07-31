@@ -16,9 +16,12 @@ class RecipyListViewTest(APITestBase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], [])
-        recipies = []
-        for i in range(random.randint(1, 5)):
-            recipies.append(RecipySerializer(instance=RecipyFactory(), context=self.test_context).data)
+        recipies = [
+            RecipySerializer(
+                instance=RecipyFactory(), context=self.test_context
+            ).data
+            for _ in range(random.randint(1, 5))
+        ]
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], recipies)

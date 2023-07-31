@@ -19,7 +19,7 @@ class APITestBase(APITestCase):
             }
         )
         token = response.data['access']
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         self.test_context = {'request': APIRequestFactory().get(self.url)}
 
     def assertSameFile(self, file1, file2):

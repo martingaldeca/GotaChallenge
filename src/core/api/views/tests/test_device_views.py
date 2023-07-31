@@ -16,9 +16,12 @@ class DeviceListViewTest(APITestBase):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], [])
-        devices = []
-        for i in range(random.randint(1, 5)):
-            devices.append(DeviceSerializer(instance=DeviceFactory(), context=self.test_context).data)
+        devices = [
+            DeviceSerializer(
+                instance=DeviceFactory(), context=self.test_context
+            ).data
+            for _ in range(random.randint(1, 5))
+        ]
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['results'], devices)
